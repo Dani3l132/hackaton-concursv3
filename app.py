@@ -71,21 +71,31 @@ def predictive_analytics(file_path, target_column, categorical_columns):
     predictions = model.predict(X_test)
     
     return predictions
+example_route = [
+    (45.792784,24.152069)
+    # Add more coordinates as needed
+]
+example_waypoints = [
+        {'name': 'street Alba Iulia', 'location': [45.792669466818985, 24.11050065876004]},  
+        {'name': 'street Metalurgistilor', 'location': [45.79502049176556, 24.131995145671116]},  
+        {'name':'street Dealului','location':[45.79121908096157, 24.14194594146985]},
+        {'name':'street George Cosbuc','location':[45.7906090862689, 24.143331189614138]},
+        {'name':'street Bulevardul Victoriei','location':[45.79172354806361, 24.14696087238784]},
+        {'name':'street Bulevardul Corneliu Coposu','location':[45.791518717676894, 24.149379423017265]},
+    ]
 
-
-def display_route_preview(route):
+def display_route_preview(route,waypoints):
     # Create a map centered around the route
     route_map = folium.Map(location=[route[0][0], route[0][1]], zoom_start=12)
+    for waypoint in waypoints:
+        folium.Marker(waypoint['location'], popup=waypoint['name']).add_to(route_map)
 
     # Add route points to the map
     folium.PolyLine(locations=route, color='blue').add_to(route_map)
 
     # Display the map
     return route_map
-example_route = [
-    (45.792784,24.152069)
-    # Add more coordinates as needed
-]
+
 
 with st.sidebar:
     st.title("navigatie")
@@ -192,9 +202,14 @@ if st.session_state.logged_in==True:
 
     if choice=="map":
      st.title("MAP")
-     route_map = display_route_preview(example_route)
+     route_map = display_route_preview(example_route,example_waypoints)
      route_map.save('route_preview.html')  # Save the map to an HTML file
-     route_map  # Display the map in the notebook or streamlit app
+     #st.write(route_map)  # Display the map in the notebook or streamlit app
+     with open('route_preview.html', 'r') as f:
+        html_string = f.read()
+     st.components.v1.html(html_string, width=700, height=500)
+
+
 
     if choice=="predictii":
        st.title("Predictii")
