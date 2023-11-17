@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 from openai import *
-import ydata_profiling
+import pandas_profiling
 import folium
+import requests
 from streamlit_pandas_profiling import st_profile_report
 import os 
 from sklearn.model_selection import train_test_split
@@ -20,6 +21,17 @@ def main():
     </style>
     '''
     st.markdown(page_bg_img, unsafe_allow_html=True)
+
+def get_route_geometry(start, end):
+    url = f"http://router.project-osrm.org/route/v1/driving/{start[1]},{start[0]};{end[1]},{end[0]}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        route = response.json()
+        if 'routes' in route and len(route['routes']) > 0:
+            geometry = route['routes'][0]['geometry']
+            return geometry
+    return None
+
 
 if __name__=="main":
    main()
@@ -89,6 +101,13 @@ def display_route_preview(route,waypoints):
     route_map = folium.Map(location=[route[0][0], route[0][1]], zoom_start=12)
     for waypoint in waypoints:
         folium.Marker(waypoint['location'], popup=waypoint['name']).add_to(route_map)
+    for i in range(len(waypoints)):
+        for j in range(i + 1, len(waypoints)):
+            start = waypoints[i]['location']
+            end = waypoints[j]['location']
+            # Example: You'd replace this with your actual shortest path algorithm and route data
+            shortest_path = [(start[0], start[1]), ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2), (end[0], end[1])]
+            folium.PolyLine(locations=shortest_path, color='blue').add_to(route_map)
 
     # Add route points to the map
     folium.PolyLine(locations=route, color='blue').add_to(route_map)
