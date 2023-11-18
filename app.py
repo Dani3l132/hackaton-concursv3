@@ -196,9 +196,10 @@ def getusercreditancials():
         email = st.text_input("E-mail: ")
         password = st.text_input("Parola: ", type='password')
         newsletter_subscribe = st.checkbox("Subscribe to newsletter")
+        st.session_state.logged_in = True
 
         try:
-            with open("credentials.txt", 'w') as savedcredi:
+            with open("creditentials.txt", 'w') as savedcredi:
                 savedcredi.write(email)
                 savedcredi.writelines('\n')
                 savedcredi.write(password)
