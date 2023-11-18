@@ -195,6 +195,7 @@ def getusercreditancials():
     if eula_accepted:
         email = st.text_input("E-mail: ")
         password = st.text_input("Parola: ", type='password')
+        
         newsletter_subscribe = st.checkbox("Subscribe to newsletter")
 
         try:
@@ -292,7 +293,7 @@ if st.session_state.logged_in==True:
        userinput=st.text_input("Grad de aglomeratie, Ore de varf,nr case, Lungimea strazi in km, Grad mediu de umplere a gunoaielor, Nr masini care trec estimativ")
        
        file_path="dataset.csv"
-       categorical_columns = ['nr case', 'lungimea strazi in km']
+       categorical_columns = ['nr case', 'userinput']
        if st.button("ENTER!"):
           results = predictive_analytics(file_path,userinput,categorical_columns)
           st.write(results)
