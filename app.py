@@ -286,7 +286,11 @@ if st.session_state.logged_in==True:
 
     if choice=="predictii":
        st.title("Predictii")
-       userinput=st.text_input("Ce criteriu v-a fi folosit la predictii:")
+      # with open("dataset.csv",'r')as d:
+          #variante=d.read()
+       #st.selectbox("",(variante))
+       userinput=st.text_input("Grad de aglomeratie, Ore de varf,nr case, Lungimea strazi in km, Grad mediu de umplere a gunoaielor, Nr masini care trec estimativ")
+       
        file_path="dataset.csv"
        categorical_columns = ['nr case', 'lungimea strazi in km']
        if st.button("ENTER!"):
