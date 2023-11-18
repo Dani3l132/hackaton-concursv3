@@ -99,14 +99,14 @@ example_waypoints = [
         {'name':'street Pescarilor ','location':[45.798116560734265, 24.15898069002962]},
         {'name':'street Constitutiei ','location':[45.79902829108386, 24.15735686779285]},
         {'name':'street Avram Iancu ','location':[45.79829791968353, 24.154419212986234]},
-        {'name':'street Moviliei ','location':[45.79904557888336, 24.15362688834847]},
-        {'name':'street 9 Mai ','location':[45.799911412227196, 24.15243655876094]},
-        {'name':'street Ocnei ','location':[45.800379008027136, 24.15042442270393]},
-        {'name':'street Plopilor','location':[45.80028101857664, 24.149697924216895]},
-        {'name':'street Vopsitorilor','location':[45.80015021604529, 24.148535714349094]},
-        {'name':'street Faurului ','location':[45.799281824778625, 24.150172189211656]},
-        {'name':'street Zidului ','location':[45.80156359382426, 24.150203459413074]},
-        {'name':'street Raului ','location':[45.8045744382801, 24.149273355826498]},
+       # {'name':'street Moviliei ','location':[45.79904557888336, 24.15362688834847]},
+       # {'name':'street 9 Mai ','location':[45.799911412227196, 24.15243655876094]},
+       # {'name':'street Ocnei ','location':[45.800379008027136, 24.15042442270393]},
+       # {'name':'street Plopilor','location':[45.80028101857664, 24.149697924216895]},
+       # {'name':'street Vopsitorilor','location':[45.80015021604529, 24.148535714349094]},
+       # {'name':'street Faurului ','location':[45.799281824778625, 24.150172189211656]},
+       # {'name':'street Zidului ','location':[45.80156359382426, 24.150203459413074]},
+        #{'name':'street Raului ','location':[45.8045744382801, 24.149273355826498]},
         #{'name':'street ','location':[]},
         #{'name':'street ','location':[]},
         #{'name':'street ','location':[]},
@@ -131,29 +131,44 @@ def get_route_geometry(start, end):
             return geometry
     return None
 
+def get_route_info(start, end):
+    url = f"http://router.project-osrm.org/route/v1/driving/{start[1]},{start[0]};{end[1]},{end[0]}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        route = response.json()
+        if 'routes' in route and len(route['routes']) > 0:
+            duration = route['routes'][0]['duration']  # Duration in seconds
+            geometry = route['routes'][0]['geometry']
+            return geometry, duration
+    return None, None
+
 
 # Function to display route preview with waypoints
 def display_route_preview(route_data, waypoints):
     # Generating a Folium map based on route data and waypoints
     route_map = folium.Map(location=(45.792784,24.152069), zoom_start=10)  # London coordinates as an example
 
-    # Adding route data to the map (this part depends on the structure of your route data)
-    # Example: folium.PolyLine(route_data).add_to(route_map)
-
-    # Adding waypoints to the map
     for waypoint in waypoints:
         folium.Marker(waypoint['location'], popup=waypoint['name']).add_to(route_map)
 
-    # Finding shortest paths between waypoints and drawing lines
     for i in range(len(waypoints)):
         for j in range(i + 1, len(waypoints)):
             start = waypoints[i]['location']
             end = waypoints[j]['location']
-            # Example: You'd replace this with your actual shortest path algorithm and route data
-            shortest_path = [(start[0], start[1]), ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2), (end[0], end[1])]
-            folium.PolyLine(locations=shortest_path, color='blue').add_to(route_map)
+            geometry, duration = get_route_info(start, end)
+            if geometry and duration:
+                line = folium.PolyLine(locations=polyline.decode(geometry), color='blue')
+                line.add_to(route_map)
+
+                # Calculate estimated time in minutes based on average speed (35 km/h)
+                time_minutes = duration / 60  # Convert duration from seconds to minutes
+                distance = 35 * (time_minutes / 60)  # Estimated distance (km) at an average speed of 35 km/h
+                mid_point = ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)  # Midpoint for text placement
+                folium.Marker(mid_point, popup=f"Estimated Time: {time_minutes:.2f} mins\nDistance: {distance:.2f} km",
+                              icon=folium.DivIcon(icon_size=(150,36), icon_anchor=(0,0), html=f"<div style='font-size: 16px; color: lime;'>{time_minutes:.2f} mins</div>")).add_to(route_map)
 
     return route_map
+
 
 
 
