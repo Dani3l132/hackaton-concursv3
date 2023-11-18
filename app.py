@@ -4,6 +4,7 @@ from openai import *
 import pandas_profiling
 import folium
 import requests
+import polyline
 from streamlit_pandas_profiling import st_profile_report
 import os 
 from sklearn.model_selection import train_test_split
@@ -94,7 +95,50 @@ example_waypoints = [
         {'name':'street George Cosbuc','location':[45.7906090862689, 24.143331189614138]},
         {'name':'street Bulevardul Victoriei','location':[45.79172354806361, 24.14696087238784]},
         {'name':'street Bulevardul Corneliu Coposu','location':[45.791518717676894, 24.149379423017265]},
+        {'name':'street Constitutiei ','location':[45.79701966358754, 24.158525042372943]},
+        {'name':'street Balea','location':[45.79593533877033, 24.15908307370339]},
+        {'name':'street Intersectie Balea cu Fabrici ','location':[45.794848857012994, 24.16004723883584]},
+        {'name':'street Izvorului ','location':[45.79426018581551, 24.160005545208673]},
+        {'name':'street  Urlea ','location':[45.79551019626466, 24.16292409915046]},
+        {'name':'street Ghetariei ','location':[45.795586504133084, 24.16407067389763]},
+        {'name':'street Intersectie Socului ','location':[45.79656032872566, 24.16484200603392]},
+        {'name':'Gara ','location':[45.79985452366536, 24.161275083737873]},
+        {'name':'street General Magheru ','location':[45.799506550878895, 24.159481146599997]},
+        {'name':'street Uzinei ','location':[45.79867829210272, 24.160065304111786]},
+        {'name':'street Pescarilor ','location':[45.798116560734265, 24.15898069002962]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
+        #{'name':'street ','location':[]},
     ]
+def get_route_info(start, end):
+    url = f"http://router.project-osrm.org/route/v1/driving/{start[1]},{start[0]};{end[1]},{end[0]}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        route = response.json()
+        if 'routes' in route and len(route['routes']) > 0:
+            duration = route['routes'][0]['duration']  # Duration in seconds
+            geometry = route['routes'][0]['geometry']
+            return geometry, duration
+    return None, None
 
 def display_route_preview(route,waypoints):
     # Create a map centered around the route
@@ -105,16 +149,20 @@ def display_route_preview(route,waypoints):
         for j in range(i + 1, len(waypoints)):
             start = waypoints[i]['location']
             end = waypoints[j]['location']
-            # Example: You'd replace this with your actual shortest path algorithm and route data
-            shortest_path = [(start[0], start[1]), ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2), (end[0], end[1])]
-            folium.PolyLine(locations=shortest_path, color='blue').add_to(route_map)
+            geometry, duration = get_route_info(start, end)
+            if geometry and duration:
+                line = folium.PolyLine(locations=polyline.decode(geometry), color='blue')
+                line.add_to(route_map)
 
-    # Add route points to the map
+                # Calculate estimated time in minutes based on average speed (35 km/h)
+                time_minutes = duration / 60  # Convert duration from seconds to minutes
+                distance = 35 * (time_minutes / 60)  # Estimated distance (km) at an average speed of 35 km/h
+                mid_point = ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)  # Midpoint for text placement
+                folium.Marker(mid_point, popup=f"Estimated Time: {time_minutes:.2f} mins\nDistance: {distance:.2f} km",
+                              icon=folium.DivIcon(icon_size=(150,36), icon_anchor=(0,0), html=f"<div style='font-size: 16px; color: lime;'>{time_minutes:.2f} mins</div>")).add_to(route_map)
     folium.PolyLine(locations=route, color='blue').add_to(route_map)
-
-    # Display the map
     return route_map
-
+    
 
 with st.sidebar:
     st.title("navigatie")
