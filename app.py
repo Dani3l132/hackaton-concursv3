@@ -106,17 +106,17 @@ example_waypoints = [
         {'name':'street General Magheru ','location':[45.799506550878895, 24.159481146599997]},
         {'name':'street Uzinei ','location':[45.79867829210272, 24.160065304111786]},
         {'name':'street Pescarilor ','location':[45.798116560734265, 24.15898069002962]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
+        {'name':'street Constitutiei ','location':[45.79902829108386, 24.15735686779285]},
+        {'name':'street Avram Iancu ','location':[45.79829791968353, 24.154419212986234]},
+        {'name':'street Moviliei ','location':[45.79904557888336, 24.15362688834847]},
+        {'name':'street 9 Mai ','location':[45.799911412227196, 24.15243655876094]},
+        {'name':'street Ocnei ','location':[45.800379008027136, 24.15042442270393]},
+        {'name':'street Plopilor','location':[45.80028101857664, 24.149697924216895]},
+        {'name':'street Vopsitorilor','location':[45.80015021604529, 24.148535714349094]},
+        {'name':'street Faurului ','location':[45.799281824778625, 24.150172189211656]},
+        {'name':'street Zidului ','location':[45.80156359382426, 24.150203459413074]},
+        {'name':'street Raului ','location':[45.8045744382801, 24.149273355826498]},
+        {'name':'street Cibinului','location':[45.804283787971194, 24.150362601840573]},
         #{'name':'street ','location':[]},
         #{'name':'street ','location':[]},
         #{'name':'street ','location':[]},
@@ -159,7 +159,7 @@ def display_route_preview(route,waypoints):
                 distance = 35 * (time_minutes / 60)  # Estimated distance (km) at an average speed of 35 km/h
                 mid_point = ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)  # Midpoint for text placement
                 folium.Marker(mid_point, popup=f"Estimated Time: {time_minutes:.2f} mins\nDistance: {distance:.2f} km",
-                              icon=folium.DivIcon(icon_size=(150,36), icon_anchor=(0,0), html=f"<div style='font-size: 16px; color: lime;'>{time_minutes:.2f} mins</div>")).add_to(route_map)
+                              icon=folium.DivIcon(icon_size=(150,36), icon_anchor=(0,0), html=f"<div style='font-size: 12px; color: yellow;'>{time_minutes:.2f} mins</div>")).add_to(route_map)
     folium.PolyLine(locations=route, color='blue').add_to(route_map)
     return route_map
     
