@@ -91,12 +91,12 @@ example_waypoints = [
         {'name':'street Faurului ','location':[45.799281824778625, 24.150172189211656]},
         {'name':'street Zidului ','location':[45.80156359382426, 24.150203459413074]},
         {'name':'street Raului ','location':[45.8045744382801, 24.149273355826498]},
-        #{'name':'street ','location':[]},
-       # {'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
-       # {'name':'street ','location':[]},
-       # {'name':'street ','location':[]},
-        #{'name':'street ','location':[]},
+        {'name':'street Scoala de Inot ','location':[45.78526037355237, 24.14556887668649]},
+        {'name':'street Octavian Goga','location':[45.782054301978, 24.143626749961957]},
+        {'name':'street Bulevardul Mihai Viteazul ','location':[45.780498814655076, 24.152791160603325]},
+        {'name':'street Semaforului ','location':[45.782555347765694, 24.167977789032378]},
+        {'name':'street Rahovei ','location':[45.781320785708814, 24.165070274516754]},
+        {'name':'street Fratii Buzesti','location':[45.781061108913796, 24.149597660416944]},
         #{'name':'street ','location':[]},
         #{'name':'street ','location':[]},
         #{'name':'street ','location':[]},
@@ -178,7 +178,7 @@ def getusercreditancials():
     email = st.text_input("E-mail: ").strip()  
     password = st.text_input("Parola: ", type='password').strip()  
 
-    if st.button("Enter"):
+    if st.button("Login"):
         if not email or not password:
             st.write("Missing info")
         elif email == emailuser and password == passworduser:
