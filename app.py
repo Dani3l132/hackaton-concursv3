@@ -183,7 +183,7 @@ def getusercreditancials():
     email = st.text_input("E-mail: ").strip()  # Remove leading/trailing whitespaces
     password = st.text_input("Parola: ", type='password').strip()  # Remove leading/trailing whitespaces
 
-    if st.button("Enter"):
+    if st.button("Login"):
         if not email or not password:
             st.write("Missing info")
         elif email == emailuser and password == passworduser:
