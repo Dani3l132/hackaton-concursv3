@@ -147,7 +147,7 @@ def display_route_preview(route_data, waypoints):
                 distance = 35 * (time_minutes / 60)  
                 mid_point = ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)  
                 folium.Marker(mid_point, popup=f"Estimated Time: {time_minutes:.2f} mins\nDistance: {distance:.2f} km",
-                              icon=folium.DivIcon(icon_size=(150,36), icon_anchor=(0,0), html=f"<div style='font-size: 16px; color: lime;'>{time_minutes:.2f} mins</div>")).add_to(route_map)
+                              icon=folium.DivIcon(icon_size=(150,36), icon_anchor=(0,0), html=f"<div style='font-size: 16px; color: black;'>{time_minutes:.2f} mins</div>")).add_to(route_map)
 
     return route_map
 
@@ -271,7 +271,7 @@ if st.session_state.logged_in==True:
         previousString=r.read()
         r.close()
 
-           
+     
      if html_string==previousString:
        st.components.v1.html(html_string, width=700, height=500)
      elif html_string!=previousString:

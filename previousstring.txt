@@ -678,7 +678,7 @@
             ).addTo(map_bd8e250e55002c4d5b059bef1b35190a);
         
     
-            var div_icon_36ae6ca049b4fb25a26f2bada323a4bf = L.divIcon({"className": "empty", "html": "\u003cdiv style=\u0027font-size: 16px; color: lime;\u0027\u003e5.62 mins\u003c/div\u003e", "iconAnchor": [0, 0], "iconSize": [150, 36]});
+            var div_icon_36ae6ca049b4fb25a26f2bada323a4bf = L.divIcon({"className": "empty", "html": "\u003cdiv style=\u0027font-size: 16px; color: black;\u0027\u003e5.62 mins\u003c/div\u003e", "iconAnchor": [0, 0], "iconSize": [150, 36]});
             marker_780e2fd46bfb293f9ab6f80378376e50.setIcon(div_icon_36ae6ca049b4fb25a26f2bada323a4bf);
         
     
