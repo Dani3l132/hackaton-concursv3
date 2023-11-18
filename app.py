@@ -13,21 +13,6 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 
-def main():
-    page_bg_img = '''
-    <style>
-    body {
-    background-image:"sibiu.jpg";
-    background-size: cover;
-    }
-    </style>
-    '''
-    st.markdown(page_bg_img, unsafe_allow_html=True)
-
-
-if __name__=="main":
-   main()
-
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'option' not in st.session_state:
@@ -57,7 +42,7 @@ def predictive_analytics(file_path, target_column, categorical_columns):
     if target_column not in data.columns:
         return f"Target column '{target_column}' not found in the dataset."
 
-    # Separate features (X) and target (y)
+    
     X = data.drop(columns=[target_column])
     y = data[target_column]
 
@@ -77,7 +62,6 @@ def predictive_analytics(file_path, target_column, categorical_columns):
     return predictions
 example_route = [
     (45.792784,24.152069)
-    # Add more coordinates as needed
 ]
 example_waypoints = [
         {'name': 'street Alba Iulia', 'location': [45.792669466818985, 24.11050065876004]},  
@@ -137,16 +121,16 @@ def get_route_info(start, end):
     if response.status_code == 200:
         route = response.json()
         if 'routes' in route and len(route['routes']) > 0:
-            duration = route['routes'][0]['duration']  # Duration in seconds
+            duration = route['routes'][0]['duration'] 
             geometry = route['routes'][0]['geometry']
             return geometry, duration
     return None, None
 
 
-# Function to display route preview with waypoints
+
 def display_route_preview(route_data, waypoints):
-    # Generating a Folium map based on route data and waypoints
-    route_map = folium.Map(location=(45.792784,24.152069), zoom_start=10)  # London coordinates as an example
+    
+    route_map = folium.Map(location=(45.792784,24.152069), zoom_start=10)  
 
     for waypoint in waypoints:
         folium.Marker(waypoint['location'], popup=waypoint['name']).add_to(route_map)
@@ -158,12 +142,10 @@ def display_route_preview(route_data, waypoints):
             geometry, duration = get_route_info(start, end)
             if geometry and duration:
                 line = folium.PolyLine(locations=polyline.decode(geometry), color='blue')
-                line.add_to(route_map)
-
-                # Calculate estimated time in minutes based on average speed (35 km/h)
-                time_minutes = duration / 60  # Convert duration from seconds to minutes
-                distance = 35 * (time_minutes / 60)  # Estimated distance (km) at an average speed of 35 km/h
-                mid_point = ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)  # Midpoint for text placement
+                line.add_to(route_map)              
+                time_minutes = duration / 60  
+                distance = 35 * (time_minutes / 60)  
+                mid_point = ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)  
                 folium.Marker(mid_point, popup=f"Estimated Time: {time_minutes:.2f} mins\nDistance: {distance:.2f} km",
                               icon=folium.DivIcon(icon_size=(150,36), icon_anchor=(0,0), html=f"<div style='font-size: 16px; color: lime;'>{time_minutes:.2f} mins</div>")).add_to(route_map)
 
@@ -193,8 +175,8 @@ def getusercreditancials():
         emailuser = basef.readline().strip()  
         passworduser = basef.readline().strip()  
 
-    email = st.text_input("E-mail: ").strip()  # Remove leading/trailing whitespaces
-    password = st.text_input("Parola: ", type='password').strip()  # Remove leading/trailing whitespaces
+    email = st.text_input("E-mail: ").strip()  
+    password = st.text_input("Parola: ", type='password').strip()  
 
     if st.button("Enter"):
         if not email or not password:
@@ -222,8 +204,6 @@ def getusercreditancials():
                 savedcredi.write(password)
 
                 if newsletter_subscribe:
-                    # Here you might want to handle the newsletter subscription logic
-                    # For example, save the email to a separate file for newsletter subscribers
                     newsletteremail=email
 
                
@@ -282,12 +262,25 @@ if st.session_state.logged_in==True:
 
     if choice=="map":
      st.title("MAP")
-     route_map = display_route_preview(example_route,example_waypoints)
-     route_map.save('route_preview.html')  # Save the map to an HTML file
-     #st.write(route_map)  # Display the map in the notebook or streamlit app
+     
      with open('route_preview.html', 'r') as f:
         html_string = f.read()
-     st.components.v1.html(html_string, width=700, height=500)
+        f.close()
+     with open('previousstring.txt','r') as r:
+        previousString=r.read()
+        r.close()
+
+           
+     if html_string==previousString:
+       st.components.v1.html(html_string, width=700, height=500)
+     elif html_string!=previousString:
+       route_map = display_route_preview(example_route,example_waypoints)
+       route_map.save('route_preview.html')  
+       st.write(route_map)  
+       with open('route_preview.html', 'r') as f:
+        html_string = f.read()
+        st.components.v1.html(html_string, width=700, height=500)
+        previousString=html_string
 
 
 
